@@ -1,6 +1,5 @@
 package com.example.receptapp.config;
 
-import com.example.receptapp.user.User;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

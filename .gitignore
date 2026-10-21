@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+node_modules/
+.expo/
+.env
+.env.*
+!.env.example
