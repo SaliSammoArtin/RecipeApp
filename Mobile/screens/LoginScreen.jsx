@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { login } from "../services/api";
 
-export default function LoginScreen({ onLogin }) {
+export default function LoginScreen({ onLogin, navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,6 +74,11 @@ export default function LoginScreen({ onLogin }) {
       <Button
         title={loading ? "Loggar in..." : "Logga in"}
         onPress={handleLogin}
+        disabled={loading}
+      />
+      <Button
+        title="Skapa konto"
+        onPress={() => navigation.navigate("Register")}
         disabled={loading}
       />
     </ScrollView>

@@ -1,13 +1,67 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import RecipeCard from "../components/RecipeCard";
-import { recipes } from "../data/recipe";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { getRecipes } from "../services/api";
 
 export default function RecipeListScreen({ navigation }) {
+
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useFocusEffect(
+      useCallback(() => {
+        let active = true;
+
+        async function loadRecipes() {
+          setLoading(true);
+          setError("");
+
+          try {
+            const data = await getRecipes();
+
+            if (active) {
+              setRecipes(data);
+            }
+          } catch (error) {
+            if (active) {
+              setError(error.message || "Kunde inte hämta recepten.");
+            }
+          } finally {
+            if (active) {
+              setLoading(false);
+            }
+          }
+        }
+
+        loadRecipes();
+
+        return () => {
+          active = false;
+        };
+      }, []),
+    );
+  
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Laddar recept...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text accessibilityRole="alert">{error}</Text>
+      </View>
+    );
+  }
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mina recept</Text>
-
-      <Text style={styles.description}>Här hittar du dina sparade recept.</Text>
+      <Text style={styles.title}> Recept</Text>
 
       <FlatList
         data={recipes}
@@ -17,7 +71,7 @@ export default function RecipeListScreen({ navigation }) {
             title={item.title}
             category={item.category}
             onPress={() =>
-              navigation.navigate("RecipeDetail", { recipeId: item.id })
+              navigation.navigate("RecipeDetail", { recipe: item })
             }
           />
         )}
