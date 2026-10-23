@@ -1,10 +1,32 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 
+const categoryColors = {
+  frukost: "#FFF0A3",
+  lunch: "#DCEFE5",
+  middag: "#F8DFE6",
+};
+
 export default function RecipeCard({ title, category, onPress }) {
+  const normalizedCategory = (category ?? "").trim().toLowerCase();
+  const accentColor = categoryColors[normalizedCategory] ?? "#E8E0F5";
+
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${title}, ${category}`}
+      accessibilityHint="Öppnar receptets ingredienser och instruktioner"
+      style={({ pressed }) => [
+        styles.card,
+        { borderLeftColor: accentColor },
+        pressed && styles.cardPressed,
+      ]}
+    >
+      <Text style={[styles.category, { backgroundColor: accentColor }]}>
+        {category}
+      </Text>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.category}>{category}</Text>
+      <Text style={styles.link}>Visa recept</Text>
     </Pressable>
   );
 }
@@ -12,20 +34,39 @@ export default function RecipeCard({ title, category, onPress }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-    padding: 16,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    marginBottom: 12,
+    borderColor: "#D7DCE2",
+    borderLeftWidth: 6,
+    marginBottom: 16,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#111827",
+  cardPressed: {
+    opacity: 0.85,
+    borderColor: "#46546C",
   },
   category: {
-    marginTop: 6,
+    alignSelf: "flex-start",
+    backgroundColor: "#FFFFFF",
+    color: "#253247",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    marginBottom: 12,
     fontSize: 14,
-    color: "#6B7280",
+    fontWeight: "600",
+  },
+  title: {
+    fontSize: 22,
+    lineHeight: 30,
+    fontWeight: "700",
+    color: "#253247",
+  },
+  link: {
+    marginTop: 16,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#253247",
+    textDecorationLine: "underline",
   },
 });

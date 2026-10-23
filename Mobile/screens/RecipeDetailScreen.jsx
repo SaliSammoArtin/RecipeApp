@@ -6,6 +6,7 @@ import {
   View,
   Button,
   Alert,
+  Share,
 } from "react-native";
 
 import { deleteRecipe } from "../services/api";
@@ -50,6 +51,26 @@ export default function RecipeDetailScreen({ route, navigation, token }) {
     ]);
   }
 
+  async function handleShare() {
+    try {
+      await Share.share({
+        message: `${recipe.title}
+Kategori: ${recipe.category}
+
+Ingredienser:
+${recipe.ingredients}
+
+Gör så här:
+${recipe.instructions}`,
+      });
+    } catch (error) {
+  Alert.alert(
+    "Delning",
+    error.message || "Ett okänt fel uppstod."
+  );
+}
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{recipe.title}</Text>
@@ -60,6 +81,8 @@ export default function RecipeDetailScreen({ route, navigation, token }) {
 
       <Text style={styles.heading}>Gör så här</Text>
       <Text style={styles.instructions}>{recipe.instructions}</Text>
+      
+      <Button title="Dela recept" onPress={handleShare} />
 
       {token && (
         <View style={styles.actions}>
